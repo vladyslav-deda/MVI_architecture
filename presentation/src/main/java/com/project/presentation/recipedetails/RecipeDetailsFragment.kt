@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.project.domain.recipeslist.model.Recipe
 import com.project.presentation.databinding.FragmentRecipeDetailsBinding
 import com.project.presentation.recipedetails.EditRecipeDialog.showEditRecipeDialog
 import com.project.presentation.recipedetails.viewmodel.RecipeDetailsEvent
 import com.project.presentation.recipedetails.viewmodel.RecipeDetailsViewModel
+import com.project.presentation.recipeslist.RecipesListFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,6 +37,10 @@ class RecipeDetailsFragment : Fragment() {
         viewModel.handleEvent(RecipeDetailsEvent.LoadRecipe(args.itemId))
         observeState()
         initViews()
+        RecipesListFragment.context = requireContext()
+        Thread(RunnableForSecondTask()).also {
+            it.start()
+        }
     }
 
     private fun initViews() {
@@ -62,4 +68,16 @@ class RecipeDetailsFragment : Fragment() {
         }
     }
 
+    inner class RunnableForSecondTask : Runnable {
+
+        override fun run() {
+            for (i in 1..999999) {
+                val someObjectOfRecipe = Recipe(
+                    id = i,
+                    title = "new recipe",
+                    description = "description for new recipe"
+                )
+            }
+        }
+    }
 }
