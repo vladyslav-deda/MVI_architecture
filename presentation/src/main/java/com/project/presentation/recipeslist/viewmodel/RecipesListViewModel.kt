@@ -3,6 +3,7 @@ package com.project.presentation.recipeslist.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.project.domain.recipeslist.model.Recipe
 import com.project.domain.recipeslist.usecase.GetRecipesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -22,26 +23,21 @@ class RecipesListViewModel @Inject constructor(
     }
 
     private fun loadRecipes() {
+        updateState(isLoading = true)
+        val recipesList = getRecipesUseCase.invoke()
+            .fold(
+                onSuccess = { it },
+                onFailure = { null }
+            )
+        updateState(recipesList = recipesList, isLoading = false)
+    }
+
+    private fun updateState(recipesList: List<Recipe>? = null, isLoading: Boolean) {
         _recipesState.postValue(
             RecipesListState(
-                isLoading = true
+                recipesList = recipesList,
+                isLoading = isLoading
             )
         )
-        val newRecipesState: RecipesListState = getRecipesUseCase.invoke()
-            .fold(
-                onSuccess = {
-                    RecipesListState(
-                        recipesList = it,
-                        isLoading = false
-                    )
-                },
-                onFailure = {
-                    RecipesListState(
-                        recipesList = null,
-                        isLoading = false
-                    )
-                })
-
-        _recipesState.postValue(newRecipesState)
     }
 }

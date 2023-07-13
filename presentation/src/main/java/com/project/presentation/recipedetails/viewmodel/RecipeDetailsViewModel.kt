@@ -26,60 +26,35 @@ class RecipeDetailsViewModel @Inject constructor(
     }
 
     private fun loadRecipeById(recipeId: Int) {
-        _recipeState.postValue(
-            RecipeDetailsState(
-                isLoading = true
-            )
-        )
-        getRecipeByIdUseCase.invoke(recipeId)
+        updateState(isLoading = true)
+        val recipe = getRecipeByIdUseCase.invoke(recipeId)
             .fold(
-                onSuccess = {
-                    _recipeState.postValue(
-                        RecipeDetailsState(
-                            recipe = it,
-                            isLoading = false
-                        )
-                    )
-                },
-                onFailure = {
-                    _recipeState.postValue(
-                        RecipeDetailsState(
-                            recipe = null,
-                            isLoading = false
-                        )
-                    )
-                })
+                onSuccess = { it },
+                onFailure = { null }
+            )
+        updateState(recipe = recipe, isLoading = false)
     }
 
     private fun updateRecipe(newRecipeDescription: String) {
         _recipeState.value?.recipe?.let {
-            _recipeState.postValue(
-                RecipeDetailsState(
-                    isLoading = true
-                )
-            )
+            updateState(isLoading = true)
             val newRecipe = Recipe(
                 id = it.id,
                 title = it.title,
                 description = newRecipeDescription
             )
-            val newRecipeState: RecipeDetailsState = editRecipeUseCase.invoke(newRecipe)
+            val recipe = editRecipeUseCase.invoke(newRecipe)
                 .fold(
-                    onSuccess = {
-                        RecipeDetailsState(
-                            recipe = newRecipe,
-                            isLoading = false
-                        )
-                    },
-                    onFailure = {
-                        RecipeDetailsState(
-                            recipe = null,
-                            isLoading = false
-                        )
-                    }
+                    onSuccess = { newRecipe },
+                    onFailure = { null }
                 )
-
-            _recipeState.postValue(newRecipeState)
+            updateState(recipe = recipe, isLoading = false)
         }
+    }
+
+    private fun updateState(recipe: Recipe? = null, isLoading: Boolean) {
+        _recipeState.postValue(
+            RecipeDetailsState(recipe = recipe, isLoading = isLoading)
+        )
     }
 }
