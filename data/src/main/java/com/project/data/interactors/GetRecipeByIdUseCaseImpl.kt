@@ -11,5 +11,5 @@ class GetRecipeByIdUseCaseImpl @Inject constructor(
 
     override fun invoke(id: Int): Result<Recipe> = runCatching {
         repository.getRecipeById(id)
-    }.fold(onSuccess = { Result.success(it) }, onFailure = { Result.failure(it) })
+    }
 }

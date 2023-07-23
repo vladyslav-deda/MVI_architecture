@@ -10,7 +10,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.project.homeworkmvi"
+        applicationId "com.epam"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -23,6 +23,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+    }
+    flavorDimensions "mode"
+    productFlavors {
+        epam {
+            dimension "mode"
+            resValue "string", "app_name", "EPAM"
+        }
+        customer {
+            dimension "mode"
+            resValue "string", "app_name", "EPAM - Customer"
+            applicationIdSuffix ".customer"
         }
     }
     compileOptions {

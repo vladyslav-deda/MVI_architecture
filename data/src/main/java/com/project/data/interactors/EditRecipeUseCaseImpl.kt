@@ -13,5 +13,5 @@ class EditRecipeUseCaseImpl @Inject constructor(
 
     override fun invoke(newRecipe: Recipe): Result<Unit> = runCatching {
         repository.editRecipe(newRecipe)
-    }.fold(onSuccess = { Result.success(it) }, onFailure = { Result.failure(it) })
+    }
 }
