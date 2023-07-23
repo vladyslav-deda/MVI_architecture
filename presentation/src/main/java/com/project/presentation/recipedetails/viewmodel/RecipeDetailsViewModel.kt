@@ -7,6 +7,7 @@ import com.project.domain.recipeslist.model.Recipe
 import com.project.domain.recipeslist.usecase.EditRecipeUseCase
 import com.project.domain.recipeslist.usecase.GetRecipeByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,10 +28,15 @@ class RecipeDetailsViewModel @Inject constructor(
 
     private fun loadRecipeById(recipeId: Int) {
         updateState(isLoading = true)
-        val recipe = getRecipeByIdUseCase.invoke(recipeId)
+        var recipe: Recipe? = null
+        getRecipeByIdUseCase.invoke(recipeId)
             .fold(
-                onSuccess = { it },
-                onFailure = { null }
+                onSuccess = {
+                    recipe = it
+                },
+                onFailure = {
+                    Timber.e(it)
+                }
             )
         updateState(recipe = recipe, isLoading = false)
     }
@@ -43,10 +49,15 @@ class RecipeDetailsViewModel @Inject constructor(
                 title = it.title,
                 description = newRecipeDescription
             )
-            val recipe = editRecipeUseCase.invoke(newRecipe)
+            var recipe: Recipe? = null
+            editRecipeUseCase.invoke(newRecipe)
                 .fold(
-                    onSuccess = { newRecipe },
-                    onFailure = { null }
+                    onSuccess = {
+                        recipe = newRecipe
+                    },
+                    onFailure = { throwable ->
+                        Timber.e(throwable)
+                    }
                 )
             updateState(recipe = recipe, isLoading = false)
         }
