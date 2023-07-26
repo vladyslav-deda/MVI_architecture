@@ -1,25 +1,20 @@
-image: circleci/android:api-28
+image: circleci/android:api-33
 
 stages:
   - build
 
-variables:
-  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false"
-
 build_epamRelease:
   stage: build
   script:
-    - chmod +x ./gradlew
     - ./gradlew assembleEpamRelease
   artifacts:
     paths:
-      - app/build/outputs/
+      - app/build/outputs/apk/epam/release/*.apk
 
 build_rdlabRelease:
   stage: build
   script:
-    - chmod +x ./gradlew
     - ./gradlew assembleRdlabRelease
   artifacts:
     paths:
-      - app/build/outputs/
+      - app/build/outputs/apk/rdLab/release/*.apk
