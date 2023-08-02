@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.project.domain.recipeslist.model.Recipe
 import com.project.domain.recipeslist.usecase.GetRecipesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,10 +25,15 @@ class RecipesListViewModel @Inject constructor(
 
     private fun loadRecipes() {
         updateState(isLoading = true)
-        val recipesList = getRecipesUseCase.invoke()
+        var recipesList: List<Recipe>? = null
+        getRecipesUseCase.invoke()
             .fold(
-                onSuccess = { it },
-                onFailure = { null }
+                onSuccess = {
+                    recipesList = it
+                },
+                onFailure = {
+                    Timber.e(it)
+                }
             )
         updateState(recipesList = recipesList, isLoading = false)
     }

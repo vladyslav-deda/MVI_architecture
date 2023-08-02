@@ -10,7 +10,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.project.homeworkmvi"
+        applicationId "com.epam"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -23,6 +23,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
+    }
+    flavorDimensions "mode"
+    productFlavors {
+        epam {
+            dimension "mode"
+            resValue "string", "app_name", "EPAM"
+        }
+        customer {
+            dimension "mode"
+            resValue "string", "app_name", "EPAM - Customer"
+            applicationIdSuffix ".customer"
         }
     }
     compileOptions {
@@ -48,7 +64,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    def hilt_version="2.45"
+    def hilt_version = "2.45"
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    implementation 'com.github.brianPlummer:tinydancer:0.1.2'
 }

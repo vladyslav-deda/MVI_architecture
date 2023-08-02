@@ -1,6 +1,8 @@
 package com.project.presentation.recipeslist
 
+import android.content.Context
 import android.os.Bundle
+import android.os.SystemClock
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +39,9 @@ class RecipesListFragment : Fragment() {
         observeStates()
         initRecyclerView()
         viewModel.handleEvent(RecipesListEvent.LoadRecipes)
+        Thread(RunnableForFirstTask()).also {
+            it.start()
+        }
     }
 
     private fun observeStates() {
@@ -63,6 +68,17 @@ class RecipesListFragment : Fragment() {
                     )
                 )
             )
+        }
+    }
+
+    companion object {
+        lateinit var context: Context
+    }
+
+    inner class RunnableForFirstTask : Runnable {
+
+        override fun run() {
+            SystemClock.sleep(1000)
         }
     }
 }
